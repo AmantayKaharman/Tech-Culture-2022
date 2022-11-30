@@ -1,0 +1,78 @@
+//SPDX-License-Identifier: MIT
+pragma solidity 0.8.7;
+
+contract Token {
+    uint256 public totalSuppl = 1000000e18;
+    mapping(address => uint256) public balancOf;
+    mapping(address => mapping(address => uint256)) public allowance;
+    mapping(address => bool) public blackList;
+    address public acc;
+    string public name = "Kunzhut";
+    string public symbol = "KT";
+    uint8 public decimal = 18;  
+
+    function addToBlackList(address noname) external returns (bool) {
+        require(msg.sender == acc, "You can not interact with tokens");
+        require(!blackList[noname], "You are currently in the black list");
+        blackList[noname] = true;
+        return true;
+    }
+
+    function totalSupply() external view returns (uint256) {
+        return totalSuppl;
+    }
+
+    function balanceOf(address account) external view returns (uint256) {
+        return balancOf[account];
+    }
+
+    function transfer(address recipient, uint256 amount)
+        external
+        returns (bool)
+    {
+        require(msg.sender != recipient, "You can not send tokens to your account");
+        require(!blackList[msg.sender], "You are currently in the blackList");
+        balancOf[msg.sender] -= amount;
+        balancOf[recipient] += amount;
+        emit Transfer(msg.sender, recipient, amount);
+        return true;
+    }
+
+    function allowanc(address owner2, address sender2)
+        external
+        view
+        returns (uint256)
+    {
+        return allowance[owner2][sender2];
+    }
+
+    function approve(address sender2, uint256 amount) external returns (bool) {
+        allowance[msg.sender][sender2] = amount;
+        emit Approve(msg.sender, sender2, amount);
+        return true;
+    }
+
+    function mint() public {
+        require(!blackList[msg.sender], "You are currently in the blackList");
+        balancOf[msg.sender] = 500e18;
+    }
+
+    function transferFrom(
+        address sender,
+        address recipient,
+        uint256 amount
+    ) external returns (bool) {
+        allowance[sender][recipient] -= amount;
+        balancOf[sender] -= amount;
+        balancOf[recipient] += amount;
+        emit Transfer(sender, recipient, amount);
+        return true;
+    }
+
+    event Transfer(address indexed from, address indexed to, uint256 amount);
+    event Approve(
+        address indexed owner,
+        address indexed sender2,
+        uint256 amount
+    );
+}
