@@ -3,9 +3,11 @@ pragma solidity 0.8.7;
 
 contract Token {
     uint256 public totalSuppl = 1000000e18;
+    
     mapping(address => uint256) public balancOf;
     mapping(address => mapping(address => uint256)) public allowance;
     mapping(address => bool) public blackList;
+    
     address public acc;
     string public name = "Kunzhut";
     string public symbol = "KT";
